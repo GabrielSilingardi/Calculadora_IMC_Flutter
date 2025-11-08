@@ -26,9 +26,20 @@ lib/
 └── StyledWidgets.dart
 ```
 
--   `main.dart`: Ponto de entrada da aplicação. Contém a lógica da interface do usuário (`HomePage`), o gerenciamento de estado dos campos de texto e a exibição dos resultados.
--   `class.dart`: Define a classe `IMC`, que encapsula toda a lógica de negócio para o cálculo do índice e a determinação da condição de saúde.
--   `StyledWidgets.dart`: Arquivo que contém widgets personalizados e estilizados, como o `TextLabel`, para manter a consistência visual e promover o reuso de código na aplicação.
+-   `main.dart`: Ponto de entrada da aplicação, configura o `TabBarController` para a navegação entre as páginas.
+-   `pages/calculadoraPage.dart`: Contém a interface do usuário para inserção de dados e o botão para acionar o cálculo.
+-   `pages/dadosPage.dart`: Exibe os registros de IMC salvos no banco de dados e permite a exclusão.
+-   `class.dart`: Define a classe `IMC`, que encapsula a lógica de negócio para o cálculo e classificação do IMC.
+-   `sqlite/`: Diretório que contém toda a lógica de interação com o banco de dados local SQLite.
+
+## 💿 Instalação via APK
+
+Se preferir, você pode instalar o aplicativo diretamente em um dispositivo Android usando o arquivo APK pré-compilado.
+
+O arquivo está localizado em:
+`build/app/outputs/flutter-apk/app-release.apk`
+
+Basta transferir este arquivo para o seu dispositivo e permitir a instalação de fontes desconhecidas.
 
 ## 🚀 Como Executar o Projeto
 
@@ -36,7 +47,7 @@ Para executar este projeto localmente, siga os passos abaixo:
 
 1.  **Clone o repositório:**
     ```sh
-    git clone <URL_DO_SEU_REPOSITORIO>
+    git clone https://github.com/seu-usuario/calculadora_imc.git
     ```
 2.  **Acesse a pasta do projeto:**
     ```sh
