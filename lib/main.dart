@@ -1,8 +1,8 @@
-import 'package:calculadora_imc/StyledWidgets.dart';
-import 'package:calculadora_imc/class.dart';
+import 'package:calculadora_imc/pages/calculadoraPage.dart';
+import 'package:calculadora_imc/pages/dadosPage.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
   runApp(MyApp());
 }
 
@@ -26,16 +26,23 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  var campoPeso = TextEditingController();
-  var campoAltura = TextEditingController();
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
+  late TabController tabController;
 
-  bool campoPesoInvalido = false;
-  bool campoAlturaInvalido = false;
+  @override
+  void initState() {
+    super.initState();
+    tabController = TabController(length: 2, vsync: this);
+  }
 
-  List<dynamic>? imcResultado;
-  double? resultado;
-  String? condicao;
+  @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
+  }
+
+  PageController pageController = PageController(initialPage: 0);
 
   @override
   Widget build(BuildContext context) {
@@ -43,122 +50,43 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text("Calculadora de IMC"),
         backgroundColor: Colors.lightBlue,
-      ),
-      body: Container(
-        margin: EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 20),
-            TextLabel(texto: "Insira seu peso"),
-            TextField(
-              cursorColor: Colors.white,
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: campoPesoInvalido ? Colors.red : Colors.white,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-              ),
-              onChanged: (value) {
-                setState(() {
-                  campoPeso.text = value;
-
-                  if (campoPeso.text != "") {
-                    campoPesoInvalido = false;
-                  }
-                });
-              },
-              onTapOutside: (event) {
-                FocusManager.instance.primaryFocus?.unfocus();
-              },
+        bottom: TabBar(
+          controller: tabController,
+          labelStyle: TextStyle(color: Colors.black),
+          unselectedLabelStyle: TextStyle(color: Colors.black),
+          dividerColor: Colors.transparent,
+          indicatorColor: Colors.black,
+          tabs: [
+            Tab(
+              icon: Icon(Icons.calculate, color: Colors.black),
+              text: "Calculadora",
             ),
-            SizedBox(height: 20),
-            TextLabel(texto: "Insira sua altura"),
-            TextField(
-              cursorColor: Colors.white,
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: campoAlturaInvalido ? Colors.red : Colors.white,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-              ),
-              onChanged: (value) {
-                setState(() {
-                  campoAltura.text = value;
-
-                  if (campoAltura.text != "") {
-                    campoAlturaInvalido = false;
-                  }
-                });
-              },
-              onTapOutside: (event) {
-                FocusManager.instance.primaryFocus?.unfocus();
-              },
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 20),
-              width: double.infinity,
-              child: TextButton(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Colors.white),
-                ),
-                onPressed: () {
-                  final pesoRaw = campoPeso.text.replaceAll(",", ".");
-                  final alturaRaw = campoAltura.text.replaceAll(",", ".");
-
-                  final peso = double.tryParse(pesoRaw);
-                  final altura = double.tryParse(alturaRaw);
-
-                  setState(() {
-                    campoPesoInvalido = peso == null || pesoRaw.isEmpty;
-                    campoAlturaInvalido = altura == null || alturaRaw.isEmpty;
-                  });
-
-                  if (campoPesoInvalido == false && campoAlturaInvalido == false) {
-                    IMC.peso = peso;
-                    IMC.altura = altura;
-
-                    imcResultado = IMC.calculo();
-                    
-                    resultado = imcResultado![0];
-                    condicao = imcResultado![1];
-                  }
-                },
-                child: Text("Calcular", style: TextStyle(color: Colors.black)),
-              ),
-            ),
-            Expanded(
-              child: SizedBox(
-                width: double.infinity,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("${resultado?.toStringAsFixed(2) ?? 0.00}", style: TextStyle(fontSize: 40)),
-                        SizedBox(width: 3),
-                        Text("imc")
-                      ],
-                    ),
-                    Text(condicao ?? "")
-                    ],
-                ),
-              ),
+            Tab(
+              icon: Icon(Icons.person, color: Colors.black),
+              text: "Dados",
             ),
           ],
+          onTap: (value) {
+            setState(() {
+              tabController.index = value;
+              pageController.jumpToPage(value);
+            });
+          },
         ),
       ),
+      body: PageView(
+        controller: pageController,
+        scrollDirection: Axis.horizontal,
+        onPageChanged: (value) {
+            setState(() {
+              tabController.index = value;
+            });
+        },
+        children: [
+          CalculadoraPage(),
+          DadosPage()
+        ],
+      )
     );
   }
 }

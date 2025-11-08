@@ -1,9 +1,14 @@
 import 'dart:math';
+import 'package:calculadora_imc/sqlite/manager.dart';
 
 class IMC {
+  static int _id = 0;
+  static String? _nome;
   static double? _peso;
   static double? _altura;
 
+  static set id(int id) => _id = id;
+  static set nome(String? value) => _nome = value;
   static set peso(double? value) => _peso = value;
   static set altura(double? value) => _altura = value;
 
@@ -29,7 +34,9 @@ class IMC {
       condicao = "Obesidade Grau III (Mórbida)";
     }
 
-    return [resultado, condicao];
+    Manager().salvar(_id, _nome!, _peso!, _altura!, resultado, condicao!);
+
+    return [_nome, _peso, _altura, resultado, condicao];
   }
 
 
