@@ -39,6 +39,7 @@ Para executar este projeto localmente, siga os passos abaixo:
 1.  **Clone o repositório:**
     ```sh
     git clone https://github.com/seu-usuario/calculadora_imc.git
+    git clone https://github.com/seu-usuario/calculadora_imc.git
     ```
 2.  **Acesse a pasta do projeto:**
     ```sh
